@@ -2,14 +2,22 @@ from os import listdir
 import shutil
 import os
 import re
-from time import sleep
 
 
 def split_into_n_dirs(original_xml_directory_path, analysis_directory_path, regex_and_subdirectory_list):
     """
+    This function takes a set of files and splits them up into two directories.
+    The files must contain unique sub-strings in the filenames,
+    which are used to split them into different directories.
+    The directories are given the same names as these.
+
     :param original_xml_directory_path:
         String. Directory containing the original files
         e.g. "C:\\Users\\John\\Documents\\2016\\Python\\XML compare\\xml_samples\\CombinedDir"
+    :param analysis_directory_path:
+        String containing path of the analysis directory.
+        This directory will contain the result files
+        plus two directories containing the baseline and new XML files
     :param regex_and_subdirectory_list:
         List of strings.  The part of the filename that describes the date or run-number
         E.g. for a file of the format "test_20150301_1a.xml, test_20151030_1a.xml"
@@ -19,13 +27,8 @@ def split_into_n_dirs(original_xml_directory_path, analysis_directory_path, rege
         each containing a file named test__1a.xml
     """
 
-    # analysis_directory = os.path.join(source_dir, analysis_dir_string)
     analysis_directory_exits = os.path.isdir(analysis_directory_path)
     if analysis_directory_exits:
-        # if bool_delete_previous_files:
-            # shutil.rmtree(analysis_directory)
-            # while(os.path.isdir(analysis_directory)): #shutil.rmtree removes tree asynchronously, so check it's finished.
-            #    print(".")
         print("ERROR - Directory " + analysis_directory_path + " already exists. Please rename or delete first")
         return
 
@@ -35,9 +38,11 @@ def split_into_n_dirs(original_xml_directory_path, analysis_directory_path, rege
 
         new_dir = os.path.join(analysis_directory_path, regex_and_subdirectory_string)
         print("Creating directory " + new_dir)
-        os.makedirs(new_dir)  # code has already checked above that analysis directory doesn't already exist
+        #Already checked above that analysis directory doesn't already exist
+        os.makedirs(new_dir)
 
-        my_file_and_directory_names = listdir(original_xml_directory_path)  # run this each loop as file list will change
+        # run this each loop as file list will change
+        my_file_and_directory_names = listdir(original_xml_directory_path)
         my_filenames = [filename for filename in my_file_and_directory_names
                         if not os.path.isdir(os.path.join(original_xml_directory_path, filename))]
         # print("my_filenames = " + str(my_filenames))

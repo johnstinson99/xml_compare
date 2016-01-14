@@ -16,7 +16,7 @@ def get_schema_dict_and_file_contents_dict_tuple(baseline_dir, separator_string)
     Return a tuple containing two objects.
     The first is a dictionary of string representations of each of the distinct schemas.
     The second is a dictionary with file name: list representation of schema
-    :param baseline_dir:
+    :param baseline_dir: directory containing xml files
     :param separator_string:
     :return:
     """
@@ -42,22 +42,23 @@ def get_schema_dict_and_file_contents_dict_tuple(baseline_dir, separator_string)
 
     return schema_dict, file_contents_dict
 
+
 def match_string(my_tuple):
     a_str = str(my_tuple[0])
     b_str = str(my_tuple[1])
-    if(a_str == b_str):
+    if a_str == b_str:
         return "Match: " + a_str
     else:
         return "Mismatch: " + a_str + " -> " + b_str
 
-def match_tags(schema_dict, filename_dict_list, delimiter_string):
+
+def match_tags(schema_dict, my_filename_dict_list):
     # where schema_dict has format {"tag1|tag2.." -> ["filename1", "filename2"..] ..}
     # and filename_dict has format {"filename1" -> ([tag1, tag2..], [value1, value2..]) ..}
     # filename_dict_list is a list containing [baseline_filename_dict, new_filename_dict]
-    baseline_filename_dict = filename_dict_list[0]
-    new_filename_dict = filename_dict_list[1]
+    baseline_filename_dict = my_filename_dict_list[0]
+    new_filename_dict = my_filename_dict_list[1]
     results_list = []
-    # date_string = date.today().isoformat()
     for schema in schema_dict.keys():
         file_list = schema_dict[schema]
         results_list.append([""])  # add a newline to differentiate schemas
@@ -69,15 +70,16 @@ def match_tags(schema_dict, filename_dict_list, delimiter_string):
             baseline_keys = baseline_key_value_tuple[0]
             baseline_values = baseline_key_value_tuple[1]
             new_key_value_tuple = new_filename_dict[file_name]
-            new_keys=new_key_value_tuple[0]
+            new_keys = new_key_value_tuple[0]
             new_values = new_key_value_tuple[1]
             if file_no_for_schema == 1:
                 # title_row_contents = [""]
                 title_row_contents = [""] + baseline_keys
-                results_list.append (title_row_contents)
+                results_list.append(title_row_contents)
                 # Only do this the first time round
                 # Prepending the space at the front of the list has effect of adding an extra blank cell above filenames
-            if(baseline_keys == new_keys):  #schemas match
+
+            if baseline_keys == new_keys:  # check if schemas match
                 value_tuples = list(zip(*(baseline_values, new_values)))
                 # print("value_tuples:")
                 # print(value_tuples)
@@ -88,7 +90,7 @@ def match_tags(schema_dict, filename_dict_list, delimiter_string):
                 print(str(results_list_for_one_file))
                 results_list.append(results_list_for_one_file)
             else:
-                results_list.append([file_name,"Mismatch - schemas dont match"])
+                results_list.append([file_name, "Mismatch - schemas dont match"])
 
     return results_list
 
@@ -100,7 +102,7 @@ split_into_n_dirs(original_xml_directory_path, analysis_directory_path, unique_r
 
 delimiter_string = "|"  # ','
 # baseline_path = join(analysis_directory_path, unique_run_id_string_list[0])
-path_list = [join(analysis_directory_path, dir) for dir in unique_run_id_string_list]
+path_list = [join(analysis_directory_path, my_dir) for my_dir in unique_run_id_string_list]
 result_tuple = [get_schema_dict_and_file_contents_dict_tuple(path, delimiter_string) for path in path_list]
 # returns [(baseline_schema_dict, baseline_filename_dict), (new_schema_dict, new_filename_dict)}
 # where schema_dict has format {"tag1|tag2.." -> ["filename1", "filename2"..] ..}
@@ -111,7 +113,7 @@ filename_dict_list = [result_tuple[0][1], result_tuple[1][1]]
 # print("a = "+str(baseline_schema_dict))
 # print("b = " + str(baseline_filename_dict))
 
-results_list = match_tags(baseline_schema_dict, filename_dict_list, delimiter_string)
+results_list = match_tags(baseline_schema_dict, filename_dict_list)
 # print(results_list)
 file_and_path = join(analysis_directory_path, "results.dat")
 '''try:
@@ -136,4 +138,3 @@ subtitle_string = "Baseline = " + unique_run_id_string_list[0] + \
 
 write_with_xlsxwriter(excel_file_and_path, results_list, title_string, subtitle_string)
 os.system('start excel.exe "%s"' % excel_file_and_path)
-

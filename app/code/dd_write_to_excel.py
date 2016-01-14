@@ -2,33 +2,31 @@ import xlsxwriter
 MAXROW =  1048575
 MAXCOLUMN = 16383
 
-def write_with_xlsxwriter(file_and_path, results_list):
+def write_with_xlsxwriter(file_and_path, results_list, title_string, subtitle_string):
+
     # Create an new Excel file and add a worksheet.
     workbook = xlsxwriter.Workbook(file_and_path)
     worksheet = workbook.add_worksheet()
 
-    # format_normal = workbook.add_format({'size': 10})
-    format_large = workbook.add_format({'size': 30})
-    # format_large.set_font_size(30)
-
+    format_title = workbook.add_format({'size': 30})
+    format_subtitle = workbook.add_format({'size': 20})
     format_bold = workbook.add_format({'bold': True})
     format_not_bold = workbook.add_format({'bold': False})
     width_of_one_char = 1.1
+    row_offset = 3
 
     add_red_green_conditional_formatting(workbook, worksheet)
 
     bold_row_boolean = False
-    bold_column_boolean = False
     max_column_string_lengths = []
+
     for row_number in range(0, len(results_list)):
         results_line = results_list[row_number]
         for column_number in range(0, len(results_line)):
-
             cell_string = results_line[column_number]
-
             my_string_length = len(cell_string)
 
-            if (len(max_column_string_lengths) <= column_number):
+            if len(max_column_string_lengths) <= column_number:
                 max_column_string_lengths.append(0)
             else:
                 max_column_string_lengths[column_number] = max(max_column_string_lengths[column_number], my_string_length)
@@ -42,21 +40,20 @@ def write_with_xlsxwriter(file_and_path, results_list):
             else:
                 bold_column_boolean = False
 
-            if row_number == 0 & column_number == 0:
-                my_format = format_large
+            if bold_column_boolean | bold_row_boolean:
+                my_format = format_bold
             else:
-                if bold_column_boolean | bold_row_boolean:
-                    my_format = format_bold
-                else:
-                    my_format = format_not_bold
+                my_format = format_not_bold
 
-            worksheet.write(row_number, column_number, cell_string, my_format)
+            worksheet.write(row_number + row_offset, column_number, cell_string, my_format)
 
+    # Set column widths
     for i in range(0, len(max_column_string_lengths)):
         worksheet.set_column(i,i, max_column_string_lengths[i]* width_of_one_char)
 
-    # Widen the first column to make the text clearer.
-   #  worksheet.set_column('A:A', 20)
+    # Add titles
+    worksheet.write(0, 0, title_string, format_title)
+    worksheet.write(1, 0, subtitle_string, format_subtitle)
 
     workbook.close()
 
@@ -74,15 +71,7 @@ def add_red_green_conditional_formatting(my_workbook, my_worksheet):
                                         'value': 'Mismatch',
                                         'format': format_red_bold})
 
-    '''worksheet.conditional_format('AA:ZZ', {'type': 'cell',
-                                             'criteria': '==',
-                                             'value': '123',
-                                             'format': format_red})'''
-
 '''
-    # Text with formatting.
-   #  worksheet.write('A2', 'World', format_bold)
-
     # Insert an image.
     #worksheet.insert_image('B5', 'logo.png')
     '''
