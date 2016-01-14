@@ -1,19 +1,26 @@
 from app.code.dd_write_to_excel import *
 from datetime import date
-
-# Iterate through the files in the baseline dictionary
-# Create a dict with schema list as the key.  Add the filename to the values.
-# This is so we can go through the dict keys in the next step
-# and for each schema process the set of files which are the values.
+'''Iterate through the files in the baseline dictionary
+Create a dict with schema list as the key.  Add the filename to the values.
+This is so we can go through the dict keys in the next step
+and for each schema process the set of files which are the values.'''
 
 from app.code.aa_utils import *
 from app.code.bb_split_into_n_dirs import *
 from os.path import join
-# import sys
+
 
 def get_schema_dict_and_file_contents_dict_tuple(baseline_dir, separator_string):
+    """
+    Take a directory (baseline_dir), run through each file in the directory and parse the xml.
+    Return a tuple containing two objects.
+    The first is a dictionary of string representations of each of the distinct schemas.
+    The second is a dictionary with file name: list representation of schema
+    :param baseline_dir:
+    :param separator_string:
+    :return:
+    """
     my_filenames = listdir(baseline_dir)  # run this each loop as file list will reduce after some moved.
-    schema_bar_delim_string_set = set()
     schema_dict = {}
     file_contents_dict = {}
     for my_filename in my_filenames:
@@ -22,33 +29,22 @@ def get_schema_dict_and_file_contents_dict_tuple(baseline_dir, separator_string)
         # first get dict of unique schemas with list of filenames
         with open(my_file_and_path, 'r') as my_file:
             flat_list = get_flat_list(my_file)
-            # print(flat_list)
             unzipped_list = list(zip(*flat_list))
-            # print(unzipped_list)
             tags = list(unzipped_list[0])
             values = list(unzipped_list[1])
-            # print(tags)
             key_string = separator_string.join(tags)
-            # print("my_file_and_path = " + my_file_and_path)
-            # print(key_string)
-            # print(str(schema_dict.keys()))
-            if key_string not in schema_dict.keys(): #.keys():
-                # print("key_string not in schema_dict.keys()")
-                schema_dict[key_string] = [] # add a new entry in the dict if the schema doesn't already exist
+            if key_string not in schema_dict.keys():
+                schema_dict[key_string] = []
             schema_dict[key_string].append(my_filename)
-            # print("myList = " + str(schema_dict[key_string]))
 
-            # now add the filename and key-value pairs to dict
-            file_contents_dict[my_filename] = (tags,values)  # in the form [[key,key..],[value,value..]]
+            # add key-value pairs to dict
+            file_contents_dict[my_filename] = (tags, values)  # in the form [[key,key..],[value,value..]]
 
-    # print()
-    # print(str(schema_dict))
-    # print(str(file_contents_dict))
-    return(schema_dict, file_contents_dict)
+    return schema_dict, file_contents_dict
 
-def match_string(tuple):
-    a_str = str(tuple[0])
-    b_str = str(tuple[1])
+def match_string(my_tuple):
+    a_str = str(my_tuple[0])
+    b_str = str(my_tuple[1])
     if(a_str == b_str):
         return "Match: " + a_str
     else:
@@ -62,8 +58,6 @@ def match_tags(schema_dict, filename_dict_list, delimiter_string):
     new_filename_dict = filename_dict_list[1]
     results_list = []
     # date_string = date.today().isoformat()
-    date_string = date.today().strftime("%B %d, %Y")
-    results_list += [["XML Comparison run on " + date_string]]
     for schema in schema_dict.keys():
         file_list = schema_dict[schema]
         results_list.append([""])  # add a newline to differentiate schemas
@@ -134,6 +128,12 @@ except FileNotFoundError:
 
 excel_file_and_path = join(analysis_directory_path, "results.xlsx")
 print("excel_file_and_path = " + excel_file_and_path)
-write_with_xlsxwriter(excel_file_and_path, results_list)
+
+date_string = date.today().strftime("%B %d, %Y")
+title_string = "XML Comparison run on " + date_string
+subtitle_string = "Baseline = " + unique_run_id_string_list[0] + \
+                  ", Latest = " + unique_run_id_string_list[1]
+
+write_with_xlsxwriter(excel_file_and_path, results_list, title_string, subtitle_string)
 os.system('start excel.exe "%s"' % excel_file_and_path)
 
