@@ -58,10 +58,10 @@ def match_tags(schema_dict, my_filename_dict_list):
     # filename_dict_list is a list containing [baseline_filename_dict, new_filename_dict]
     baseline_filename_dict = my_filename_dict_list[0]
     new_filename_dict = my_filename_dict_list[1]
-    results_list = []
+    my_results_list = []
     for schema in schema_dict.keys():
         file_list = schema_dict[schema]
-        results_list.append([""])  # add a newline to differentiate schemas
+        my_results_list.append([""])  # add a newline to differentiate schemas
         file_no_for_schema = 0
         for file_name in file_list:
             file_no_for_schema += 1
@@ -75,7 +75,7 @@ def match_tags(schema_dict, my_filename_dict_list):
             if file_no_for_schema == 1:
                 # title_row_contents = [""]
                 title_row_contents = [""] + baseline_keys
-                results_list.append(title_row_contents)
+                my_results_list.append(title_row_contents)
                 # Only do this the first time round
                 # Prepending the space at the front of the list has effect of adding an extra blank cell above filenames
 
@@ -88,11 +88,11 @@ def match_tags(schema_dict, my_filename_dict_list):
                 # print(results_list_for_one_file)
                 results_list_for_one_file = [file_name] + match_string_list
                 print(str(results_list_for_one_file))
-                results_list.append(results_list_for_one_file)
+                my_results_list.append(results_list_for_one_file)
             else:
-                results_list.append([file_name, "Mismatch - schemas dont match"])
+                my_results_list.append([file_name, "Mismatch - schemas dont match"])
 
-    return results_list
+    return my_results_list
 
 
 original_xml_directory_path = "C:\\Users\\John\\Documents\\2016\\Python\\XML compare\\xml_samples\\CombinedDir"

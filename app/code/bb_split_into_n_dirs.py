@@ -38,7 +38,7 @@ def split_into_n_dirs(original_xml_directory_path, analysis_directory_path, rege
 
         new_dir = os.path.join(analysis_directory_path, regex_and_subdirectory_string)
         print("Creating directory " + new_dir)
-        #Already checked above that analysis directory doesn't already exist
+        # Already checked above that analysis directory doesn't exist
         os.makedirs(new_dir)
 
         # run this each loop as file list will change

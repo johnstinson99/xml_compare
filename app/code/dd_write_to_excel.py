@@ -1,6 +1,6 @@
 import xlsxwriter
-MAXROW =  1048575
-MAXCOLUMN = 16383
+MAX_ROW = 1048575
+MAX_COLUMN = 16383
 
 def write_with_xlsxwriter(file_and_path, results_list, title_string, subtitle_string):
 
@@ -29,7 +29,8 @@ def write_with_xlsxwriter(file_and_path, results_list, title_string, subtitle_st
             if len(max_column_string_lengths) <= column_number:
                 max_column_string_lengths.append(0)
             else:
-                max_column_string_lengths[column_number] = max(max_column_string_lengths[column_number], my_string_length)
+                max_column_string_lengths[column_number] = \
+                    max(max_column_string_lengths[column_number], my_string_length)
 
             if column_number == 0:
                 bold_column_boolean = True
@@ -49,7 +50,7 @@ def write_with_xlsxwriter(file_and_path, results_list, title_string, subtitle_st
 
     # Set column widths
     for i in range(0, len(max_column_string_lengths)):
-        worksheet.set_column(i,i, max_column_string_lengths[i]* width_of_one_char)
+        worksheet.set_column(i, i, max_column_string_lengths[i] * width_of_one_char)
 
     # Add titles
     worksheet.write(0, 0, title_string, format_title)
@@ -57,21 +58,17 @@ def write_with_xlsxwriter(file_and_path, results_list, title_string, subtitle_st
 
     workbook.close()
 
+
 def add_red_green_conditional_formatting(my_workbook, my_worksheet):
     # my_workbook = my_worksheet.get
     format_red_bold = my_workbook.add_format({'bold': True, 'font_color': 'red'})
     format_green = my_workbook.add_format({'font_color': 'green'})
-    my_worksheet.conditional_format(0,0,MAXROW,MAXCOLUMN, {'type': 'text',
-                                            'criteria': 'begins with',
-                                            'value': 'Match',
-                                            'format': format_green})
+    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
+                                                                'criteria': 'begins with',
+                                                                'value': 'Match',
+                                                                'format': format_green})
 
-    my_worksheet.conditional_format(0,0,MAXROW,MAXCOLUMN, {'type': 'text',
-                                        'criteria': 'begins with',
-                                        'value': 'Mismatch',
-                                        'format': format_red_bold})
-
-'''
-    # Insert an image.
-    #worksheet.insert_image('B5', 'logo.png')
-    '''
+    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
+                                                                'criteria': 'begins with',
+                                                                'value': 'Mismatch',
+                                                                'format': format_red_bold})
