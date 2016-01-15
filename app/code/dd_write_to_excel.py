@@ -1,8 +1,15 @@
 import xlsxwriter
+from datetime import date
 MAX_ROW = 1048575
 MAX_COLUMN = 16383
 
-def write_with_xlsxwriter(file_and_path, results_list, title_string, subtitle_string):
+def write_with_xlsxwriter(file_and_path, results_list, unique_run_id_string_list):
+
+    date_string = date.today().strftime("%B %d, %Y")
+    title_string = "XML Comparison run on " + date_string
+    subtitle_string = "Baseline = " + unique_run_id_string_list[0] + \
+                      ", Latest = " + unique_run_id_string_list[1]
+    print("excel_file_and_path = " + file_and_path)
 
     # Create an new Excel file and add a worksheet.
     workbook = xlsxwriter.Workbook(file_and_path)
