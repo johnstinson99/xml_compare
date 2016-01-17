@@ -3,6 +3,7 @@ from datetime import date
 MAX_ROW = 1048575
 MAX_COLUMN = 16383
 
+
 def write_with_xlsxwriter(file_and_path, results_list, unique_run_id_string_list):
 
     date_string = date.today().strftime("%B %d, %Y")
@@ -62,7 +63,6 @@ def write_with_xlsxwriter(file_and_path, results_list, unique_run_id_string_list
         else:
             worksheet.set_column(i, i, 2)
 
-
     # Add titles
     worksheet.write(0, 0, title_string, format_title)
     worksheet.write(1, 0, subtitle_string, format_subtitle)
@@ -72,29 +72,34 @@ def write_with_xlsxwriter(file_and_path, results_list, unique_run_id_string_list
 
 def add_red_green_conditional_formatting(my_workbook, my_worksheet):
     # my_workbook = my_worksheet.get
-    format_red_bold = my_workbook.add_format({'bold': True, 'font_color': 'red'})
-    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
-                                                                'criteria': 'begins with',
-                                                                'value': 'X-Mismatch',
-                                                                'format': format_red_bold})
-
-    format_amber_bold = my_workbook.add_format({'bold': True, 'font_color': 'amber'})
-    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
-                                                                'criteria': 'begins with',
-                                                                'value': 'Ignore: Key Matches',
-                                                                'format': format_amber_bold})
-
-    format_amber_bold = my_workbook.add_format({'bold': True, 'font_color': 'amber'})
-    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
-                                                                'criteria': 'begins with',
-                                                                'value': 'Ignore: Key Matches',
-                                                                'format': format_amber_bold})
-
     format_green = my_workbook.add_format({'font_color': 'green'})
     my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
                                                                 'criteria': 'begins with',
                                                                 'value': 'Match',
                                                                 'format': format_green})
+
+    format_red_bold = my_workbook.add_format({'bold': True, 'font_color': 'red'})
+    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
+                                                                'criteria': 'begins with',
+                                                                'value': 'X-Mismatch',
+                                                                'format': format_red_bold})
+    format_magenta_bold = my_workbook.add_format({'bold': True, 'font_color': 'magenta'})
+    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
+                                                                'criteria': 'begins with',
+                                                                'value': 'Mismatch - schemas dont match',
+                                                                'format': format_magenta_bold})
+
+    format_cyan_bold = my_workbook.add_format({'bold': True, 'font_color': 'cyan'})
+    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
+                                                                'criteria': 'begins with',
+                                                                'value': 'Ignore: Values only differ by unique parts',
+                                                                'format': format_cyan_bold})
+
+    format_blue_bold = my_workbook.add_format({'bold': True, 'font_color': 'blue'})
+    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
+                                                                'criteria': 'begins with',
+                                                                'value': 'Ignore: Key contains',
+                                                                'format': format_blue_bold})
 
 ''' black #000000
     blue #0000FF

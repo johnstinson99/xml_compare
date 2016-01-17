@@ -20,7 +20,7 @@ class TestUtils(unittest.TestCase):
 
     def test_match_match_messageid_in_key_match_returns_false(self):
         actual_result = match_messageid_in_key("any_key_messageId", ("val1", "val2"), ("111", "222"))
-        expected_result = (True, 'Ignore: Key Matches messageId')
+        expected_result = (True, 'Ignore: Key contains messageId, key = any_key_messageId, val1 -> val2')
         print("actual result = ")
         print(actual_result)
         assert(expected_result == actual_result)
@@ -34,7 +34,7 @@ class TestUtils(unittest.TestCase):
 
     def test_diff_in_unique_tuple_positive(self):
         actual_result = diff_in_unique_tuple("any_key", ("val_111_1", "val_222_1"), ("111", "222"))
-        expected_result = (True, 'Ignore: Values only differ due by unique parts of filename')
+        expected_result = (True, 'Ignore: Values only differ by unique parts of filename, val_111_1 -> val_222_1')
         print("actual result = ")
         print(actual_result)
         assert(expected_result == actual_result)
@@ -72,7 +72,7 @@ class TestUtils(unittest.TestCase):
                 TestUtils.function_list,
                 ("any_key_messageId", "val1", "val2"),
                 ("111", "222"))
-        expected_result = ('Ignore: Key Matches messageId')
+        expected_result = ('Ignore: Key contains messageId, key = any_key_messageId, val1 -> val2')
         print(actual_result)
         assert(expected_result == actual_result)
 
@@ -81,7 +81,7 @@ class TestUtils(unittest.TestCase):
                 TestUtils.function_list,
                 ("any_key", "val_111_1", "val_222_1"),
                 ("111", "222"))
-        expected_result = ('Ignore: Values only differ due by unique parts of filename')
+        expected_result = ('Ignore: Values only differ by unique parts of filename, val_111_1 -> val_222_1')
         print(actual_result)
         assert(expected_result == actual_result)
 
