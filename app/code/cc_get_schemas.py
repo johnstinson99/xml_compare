@@ -1,6 +1,7 @@
 from app.code.aa_xml_flatten_utils import *
 from app.code.bb_split_into_n_dirs import *
 from os.path import join
+from app.code.ee_system_match_functions import call_match_functions_in_order
 
 
 def get_schema_dict_and_file_contents_dict_tuple(baseline_dir):
@@ -40,7 +41,7 @@ def get_schema_dict_and_file_contents_dict_tuple(baseline_dir):
     return schema_dict, file_contents_dict
 
 
-def match_string(my_tuple):
+'''def match_string(my_tuple):
 
     """
     Return a string that goes in an Excel cell, to indicate whether or not there's a match
@@ -53,10 +54,10 @@ def match_string(my_tuple):
     if a_str == b_str:
         return "Match: " + a_str
     else:
-        return "Mismatch: " + a_str + " -> " + b_str
+        return "Mismatch: " + a_str + " -> " + b_str'''
 
 
-def match_tags(schema_dict, my_filename_dict_list):
+def match_tags(schema_dict, my_filename_dict_list, matching_function_list, unique_string_tuple):
 
     """
     This takes in schema and value information for a number of files and returns a list of lists
@@ -93,8 +94,18 @@ def match_tags(schema_dict, my_filename_dict_list):
                 my_results_list.append(title_row_contents)
 
             if baseline_keys == new_keys:  # check if schemas match
-                value_tuples = list(zip(*(baseline_values, new_values)))
-                match_string_list = [match_string(pair) for pair in value_tuples]  # list of strings
+                # value_tuples = list(zip(*(baseline_values, new_values)))
+                # print("baseline_keys = "+str(baseline_keys))
+                # print("baseline_values = " + str(baseline_values))
+                # print("new_values = " + str(new_values))
+                key_value1_value2_tuples = list(zip(baseline_keys, baseline_values, new_values))
+                print("key_value1_value2_tuple = "+ str(key_value1_value2_tuples))
+                # match_string_list = [match_string(pair) for pair in value_tuples]  # list of strings
+                match_string_list = [call_match_functions_in_order(
+                        matching_function_list,
+                        key_value1_value2_tuple,
+                        unique_string_tuple)
+                                           for key_value1_value2_tuple in key_value1_value2_tuples]
                 results_list_for_one_file = [file_name] + match_string_list
                 my_results_list.append(results_list_for_one_file)
             else:
@@ -103,17 +114,19 @@ def match_tags(schema_dict, my_filename_dict_list):
     return my_results_list
 
 
-def create_results_list(my_analysis_directory_path, my_unique_run_id_string_list):
+def create_results_list(my_analysis_directory_path, my_unique_run_id_string_tuple, matching_function_list):
 
     """
     :param my_analysis_directory_path: path to the 'analysis' directory
-    :param my_unique_run_id_string_list: names of the sub-directories containing xml files
+    :param my_unique_run_id_string_tuple: e.g. ('10102015', '03012016')
+    :param matching_function_list: list of functions which carry out the matching
     :return: a results list that can easily be processed in Excel.
     """
 
-    path_list = [join(my_analysis_directory_path, my_dir) for my_dir in my_unique_run_id_string_list]
+    path_list = [join(my_analysis_directory_path, my_dir) for my_dir in my_unique_run_id_string_tuple]
     result_tuple = [get_schema_dict_and_file_contents_dict_tuple(path) for path in path_list]
+    print("result_tuple = "+str(result_tuple))
     baseline_schema_dict = result_tuple[0][0]
     filename_dict_list = [result_tuple[0][1], result_tuple[1][1]]
-    results_list = match_tags(baseline_schema_dict, filename_dict_list)
+    results_list = match_tags(baseline_schema_dict, filename_dict_list, matching_function_list, my_unique_run_id_string_tuple)
     return results_list

@@ -73,13 +73,42 @@ def write_with_xlsxwriter(file_and_path, results_list, unique_run_id_string_list
 def add_red_green_conditional_formatting(my_workbook, my_worksheet):
     # my_workbook = my_worksheet.get
     format_red_bold = my_workbook.add_format({'bold': True, 'font_color': 'red'})
+    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
+                                                                'criteria': 'begins with',
+                                                                'value': 'X-Mismatch',
+                                                                'format': format_red_bold})
+
+    format_amber_bold = my_workbook.add_format({'bold': True, 'font_color': 'amber'})
+    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
+                                                                'criteria': 'begins with',
+                                                                'value': 'Ignore: Key Matches',
+                                                                'format': format_amber_bold})
+
+    format_amber_bold = my_workbook.add_format({'bold': True, 'font_color': 'amber'})
+    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
+                                                                'criteria': 'begins with',
+                                                                'value': 'Ignore: Key Matches',
+                                                                'format': format_amber_bold})
+
     format_green = my_workbook.add_format({'font_color': 'green'})
     my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
                                                                 'criteria': 'begins with',
                                                                 'value': 'Match',
                                                                 'format': format_green})
 
-    my_worksheet.conditional_format(0, 0, MAX_ROW, MAX_COLUMN, {'type': 'text',
-                                                                'criteria': 'begins with',
-                                                                'value': 'Mismatch',
-                                                                'format': format_red_bold})
+''' black #000000
+    blue #0000FF
+    brown #800000
+    cyan #00FFFF
+    gray #808080
+    green #008000
+    lime #00FF00
+    magenta #FF00FF
+    navy #000080
+    orange #FF6600
+    pink #FF00FF
+    purple #800080
+    red #FF0000
+    silver #C0C0C0
+    white #FFFFFF
+    yellow #FFFF00'''

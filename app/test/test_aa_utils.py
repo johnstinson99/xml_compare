@@ -1,4 +1,4 @@
-from app.code.aa_utils import *
+from app.code.aa_xml_flatten_utils import *
 import unittest
 
 
@@ -36,6 +36,7 @@ class TestUtils(unittest.TestCase):
                            ('FIXML_PosRpt_Qty_<2>_@Typ', 'IAS'),
                            ('FIXML_PosRpt_Qty_<2>_@Long', '10')]
         print("actual result = ")
+        print(actual_result)
 
         self.assertEqual(expected_result, actual_result)
 
