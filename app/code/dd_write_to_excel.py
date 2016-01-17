@@ -57,7 +57,11 @@ def write_with_xlsxwriter(file_and_path, results_list, unique_run_id_string_list
 
     # Set column widths
     for i in range(0, len(max_column_string_lengths)):
-        worksheet.set_column(i, i, max_column_string_lengths[i] * width_of_one_char)
+        if i == 0:
+            worksheet.set_column(i, i, max_column_string_lengths[i] * width_of_one_char)
+        else:
+            worksheet.set_column(i, i, 2)
+
 
     # Add titles
     worksheet.write(0, 0, title_string, format_title)
