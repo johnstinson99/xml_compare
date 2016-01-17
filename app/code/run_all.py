@@ -17,11 +17,8 @@ results_list = create_results_list(analysis_directory_path, unique_run_id_string
 write_with_xlsxwriter(excel_file_and_path, results_list, unique_run_id_string_tuple)
 system('start excel.exe "%s"' % excel_file_and_path)
 
-# TODO function that takes key value pair
-# TODO      if "messageId" in key then amber
-# TODO      if unique string is only difference in value then amber
+# TODO pass colours along with functions.
+# TODO put complexity of excel formatting in the Excel code.
 # TODO create pivotable format
 # TODO don't copy files, but instead create a dict of longname to shortname
 # TODO test to time performance
-
-
